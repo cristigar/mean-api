@@ -102,6 +102,39 @@
 
                 res.json(user);
             });
+        })
+
+        /**
+         * Update the user with this id
+         * (accessed at PUT http://localhost:8080/api/users/:user_id)
+         *
+         * @param {Object} req, res - Request and response objects
+         */
+        .put((req, res) => {
+            /**
+             * Find a user by id and change its name and password
+             *
+             * @param  {integer} req.params.user_id Id of the user
+             */
+            User.findById(req.params.user_id, function(err, user) {
+
+                // Send error message in case of error
+                if (err) res.send(err);
+
+                // Update the user info
+                user.name = req.body.name;
+                user.password = req.body.password;
+
+                // save the user
+                user.save(function(err) {
+                    // Send error message in case of error
+                    if (err) res.send(err);
+
+                    // Send success message
+                    res.json({ message: 'User updated!' });
+                });
+
+            });
         });
 
     // register the routes
