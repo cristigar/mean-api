@@ -89,6 +89,21 @@
             });
         });
 
+    router.route('/users/:user_id')
+
+        /**
+         * Get a single user by ID
+         *
+         * @param {Object} req, res - Request and response objects
+         */
+        .get((req, res) => {
+            User.findById(req.params.user_id, (err, user) => {
+                if (err) res.send(err);
+
+                res.json(user);
+            });
+        });
+
     // register the routes
     app.use('/api', router);
 
