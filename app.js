@@ -5,7 +5,10 @@
     // call the packages we need
     var express = require('express'),
         app = express(),
-        bodyParser = require('body-parser');
+        bodyParser = require('body-parser'),
+        mongoose = require('mongoose'),
+        config = require('./modules/config'),
+        assert = require('assert');
 
     // configure app to use bodyParser()
     app.use(bodyParser.urlencoded({
@@ -13,7 +16,11 @@
     }));
     app.use(bodyParser.json());
 
-    var port = process.env.PORT || 8080;
+    // establishing a database connection
+    mongoose.connect(config.database, (err) => {
+        assert.equal(null, err);
+        console.log('Successfully connected to ' + config.database);
+    });
 
     // configuring routes
     var router = express.Router();
@@ -29,6 +36,6 @@
     app.use('/api', router);
 
     // starting the server
-    app.listen(port);
-    console.log('Listening on port: ' + port);
+    app.listen(config.port);
+    console.log('Listening on port: ' + config.port);
 })();
