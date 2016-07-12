@@ -116,7 +116,7 @@
              *
              * @param  {integer} req.params.user_id Id of the user
              */
-            User.findById(req.params.user_id, function(err, user) {
+            User.findById(req.params.user_id, (err, user) => {
 
                 // Send error message in case of error
                 if (err) res.send(err);
@@ -126,7 +126,7 @@
                 user.password = req.body.password;
 
                 // save the user
-                user.save(function(err) {
+                user.save((err) => {
                     // Send error message in case of error
                     if (err) res.send(err);
 
@@ -134,6 +134,16 @@
                     res.json({ message: 'User updated!' });
                 });
 
+            });
+        })
+
+        .delete((req, res) => {
+            User.remove({
+                _id: req.params.user_id
+            }, (err, user) => {
+                if (err) res.send(err);
+
+                res.json({ message: 'Successfully deleted' });
             });
         });
 
