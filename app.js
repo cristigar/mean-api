@@ -8,6 +8,7 @@
         bodyParser = require('body-parser'),
         mongoose = require('mongoose'),
         config = require('./modules/config'),
+        User = require('./app/models/user'),
         assert = require('assert');
 
     // configure app to use bodyParser()
@@ -24,6 +25,13 @@
 
     // configuring routes
     var router = express.Router();
+
+    // middleware to use for all requests
+    router.use((req, res, next) => {
+        // logging...
+        console.log('Something is happening.');
+        next(); // pass to the next route
+    });
 
     // testing routes to make sure everything is working (localhost:8080/api)
     router.get('/', (req, res) => {
