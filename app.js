@@ -42,28 +42,43 @@
 
     // routes that end in /users
     router.route('/users')
-        // create a user (accessed at POST http://localhost:8080/api/users)
+        /**
+         * Create a user (accessed at POST http://localhost:8080/api/users)
+         *
+         * @param {Object} req, res - Request and response objects
+         */
         .post((req, res) => {
+            /**
+             * Create a new instance of the User model and set the name and
+             * password values from the request
+             *
+             * @param {Object} user - The user object
+             * @param {string} user.name - The user's name
+             * @param {string} user.password - The user's password
+             */
+            var user = new User({
+                name: req.body.name,
+                password: req.body.password
+            });
 
-            // create a new instance of the User model
-            var user = new User();
-
-            // set the user's name (comes from the request)
-            user.name = req.body.name;
-
-            // set the user's password (comes from the request)
-            user.password = req.body.password;
-
+            /**
+             * Save the user
+             *
+             * @type {Object} user
+             */
             user.save((err) => {
-                if (err) {
-                    res.send(err);
-                }
+                if (err) res.send(err);
 
                 res.json({ message: 'User created!' });
             });
         })
 
-        // get all the users (accessed at GET http://localhost:8080/api/users)
+        //
+        /**
+         * Get all the users (accessed at GET http://localhost:8080/api/users)
+         *
+         * @param {Object} req, res - Request and response objects
+         */
         .get((req, res) => {
             User.find((err, users) => {
                 if (err) {
