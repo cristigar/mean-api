@@ -9,6 +9,7 @@
         config = require('./modules/config'),
         mongoose = require('mongoose'),
         usersRoutes = require('./app/routes/users'),
+        todosRoutes = require('./app/routes/todos'),
         bodyParser = require('body-parser'),
         assert = require('assert');
 
@@ -25,7 +26,8 @@
     });
 
     // register the routes
-    app.use('/api', usersRoutes);
+    app.use('/api/v1/users', usersRoutes);
+    app.use('/api/v1/todos', todosRoutes);
 
     // starting the server
     app.listen(config.port);

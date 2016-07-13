@@ -4,32 +4,12 @@
     const
         express = require('express'),
         router = express.Router(),
-        User = require('../models/user');
-
-    // Middleware to use for all requests
-    router
-        .use((req, res, next) => {
-            // Logging to the console
-            console.log('Something is happening.');
-
-            // pass to the next route
-            next();
-        })
-
-    /**
-     * Testing routes to make sure everything is working
-     * (GET localhost:8080/api)
-     */
-    .get('/', (req, res) => {
-        res.json({
-            message: "It works!"
-        });
-    });
+        User = require('../models/user').model;
 
     /**
      * Routes that end in `/users`
      */
-    router.route('/users')
+    router.route('/')
         /**
          * Create a user (POST http://localhost:8080/api/users)
          *
@@ -67,22 +47,28 @@
          *
          * @param {Object} req, res - Request and response objects
          */
-        .get((req, res) => {
-            User.find((err, users) => {
-                if (err) {
-                    res.send(err);
-                }
+        .get(
+            //     (req, res, next) => {
+            //     let token = req.query.token;//
+            //     u
+            //
+            // },
+            (req, res) => {
+                User.find((err, users) => {
+                    if (err) {
+                        res.send(err);
+                    }
 
-                res.json(users);
+                    res.json(users);
+                });
             });
-        });
 
     /**
      * Routes tha end in `/users/:user_id`
      *
      * @param  {string} '/users/:user_id' Route descriptor
      */
-    router.route('/users/:user_id')
+    router.route('/:user_id')
         /**
          * Get a single user by ID
          *
