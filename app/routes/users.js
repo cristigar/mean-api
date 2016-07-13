@@ -4,7 +4,53 @@
     const
         express = require('express'),
         router = express.Router(),
-        User = require('../models/user').model;
+        User = require('../models/user').model,
+        config = require('../../modules/config'),
+        jwt = require('jsonwebtoken'),
+        authorization = require('../../modules/authorization');
+
+
+    router.post('/login', (req, res) => {
+        // find the user
+        User.findOne({
+            name: req.body.name
+        }, function(err, user) {
+
+            if (err) throw err;
+
+            if (!user) {
+                res.json({
+                    success: false,
+                    message: 'Authentication failed. User not found.'
+                });
+            } else if (user) {
+
+                // check if password matches
+                if (user.password != req.body.password) {
+                    res.json({
+                        success: false,
+                        message: 'Authentication failed. Wrong password.'
+                    });
+                } else {
+
+                    // if user is found and password is right
+                    // create a token
+                    var token = jwt.sign(user, config.superSecret, {
+                        expiresIn: "1 day" // expires in 24 hours
+                    });
+
+                    // return the information including token as JSON
+                    res.json({
+                        success: true,
+                        message: 'Enjoy your token!',
+                        token: token
+                    });
+                }
+
+            }
+
+        });
+    });
 
     /**
      * Routes that end in `/users`
@@ -47,21 +93,15 @@
          *
          * @param {Object} req, res - Request and response objects
          */
-        .get(
-            //     (req, res, next) => {
-            //     let token = req.query.token;//
-            //     u
-            //
-            // },
-            (req, res) => {
-                User.find((err, users) => {
-                    if (err) {
-                        res.send(err);
-                    }
+        .get(authorization.isUserAuthentificated, (req, res) => {
+            User.find((err, users) => {
+                if (err) {
+                    res.send(err);
+                }
 
-                    res.json(users);
-                });
+                res.json(users);
             });
+        });
 
     /**
      * Routes tha end in `/users/:user_id`
@@ -69,6 +109,7 @@
      * @param  {string} '/users/:user_id' Route descriptor
      */
     router.route('/:user_id')
+        .all(authorization.isUserAuthentificated)
         /**
          * Get a single user by ID
          *

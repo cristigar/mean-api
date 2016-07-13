@@ -17,7 +17,6 @@
          * @param {Object} req, res - Request and response objects
          */
         .post((req, res) => {
-
             // Set todo name from the request
             let todo = new Todo({
                 name: req.body.name
@@ -41,9 +40,6 @@
                         .populate('_author')
                         .exec((err, todo) => {
                             if (err) res.send(err);
-
-                            // Log the newly created todo
-                            console.log(todo);
                         });
 
                     res.json({
@@ -52,90 +48,61 @@
                 });
             });
         });
-        // /**
-        //  * Get all the users (GET http://localhost:8080/api/users)
-        //  *
-        //  * @param {Object} req, res - Request and response objects
-        //  */
-        // .get((req, res) => {
-        //     User.find((err, users) => {
-        //         if (err) {
-        //             res.send(err);
-        //         }
+
+    /**
+     * Routes tha end in `/users/:user_id`
+     *
+     * @param  {string} '/users/:user_id' Route descriptor
+     */
+    router.route('/:user_id')
+        /**
+         * Get all todos of a specific user
+         *
+         * @param {Object} req, res - Request and response objects
+         */
+        .get(
+            (req, res) => {
+                Todo.find({
+                    _author: req.params.user_id
+                }, (err, todos) => {
+                    if (err) {
+                        res.send(err);
+                    }
+
+                    res.json(todos);
+                });
+            });
+
+    router.route('/:todo_id')
+        // .put(
+        //     /**
+        //      * Find a todo by id and change its name
+        //      *
+        //      * @param  {integer} req.params.todo_id Id of the user
+        //      */
+        //     Todo.findById(req.params.todo_id, (err, todo) => {
         //
-        //         res.json(users);
-        //     });
-        // });
-    //
-    // /**
-    //  * Routes tha end in `/users/:user_id`
-    //  *
-    //  * @param  {string} '/users/:user_id' Route descriptor
-    //  */
-    // router.route('/users/:user_id')
-    //     /**
-    //      * Get a single user by ID
-    //      *
-    //      * @param {Object} req, res - Request and response objects
-    //      */
-    //     .get((req, res) => {
-    //         User.findById(req.params.user_id, (err, user) => {
-    //             if (err) res.send(err);
-    //
-    //             res.json(user);
-    //         });
-    //     })
-    //     /**
-    //      * Update the user with this id
-    //      * (PUT http://localhost:8080/api/users/:user_id)
-    //      *
-    //      * @param {Object} req, res - Request and response objects
-    //      */
-    //     .put((req, res) => {
-    //         /**
-    //          * Find a user by id and change its name and password
-    //          *
-    //          * @param  {integer} req.params.user_id Id of the user
-    //          */
-    //         User.findById(req.params.user_id, (err, user) => {
-    //
-    //             // Send error message in case of error
-    //             if (err) res.send(err);
-    //
-    //             // Update the user info
-    //             user.name = req.body.name;
-    //             user.password = req.body.password;
-    //
-    //             // save the user
-    //             user.save((err) => {
-    //                 // Send error message in case of error
-    //                 if (err) res.send(err);
-    //
-    //                 // Send success message
-    //                 res.json({
-    //                     message: 'User updated!'
-    //                 });
-    //             });
-    //
-    //         });
-    //     })
-    //     /**
-    //      * Delete the user with this id
-    //      * (DELETE http://localhost:8080/api/users/:user_id)
-    //      *
-    //      * @param {Object} req, res - Request and response objects
-    //      */
-    //     .delete((req, res) => {
-    //         User.remove({
-    //             _id: req.params.user_id
-    //         }, (err, user) => {
-    //             if (err) res.send(err);
-    //
-    //             res.json({
-    //                 message: 'User successfully deleted'
-    //             });
-    //         });
-    //     });
+        //         // Send error message in case of error
+        //         if (err) res.send(err);
+        //
+        //         // Update the user info
+        //         user.name = req.body.name;
+        //         user.password = req.body.password;
+        //
+        //         // save the user
+        //         user.save((err) => {
+        //             // Send error message in case of error
+        //             if (err) res.send(err);
+        //
+        //             // Send success message
+        //             res.json({
+        //                 message: 'User updated!'
+        //             });
+        //         });
+        //
+        //     })
+        // )
+        .delete();
 
     module.exports = router;
 })();
