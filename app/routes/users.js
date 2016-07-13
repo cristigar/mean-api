@@ -14,7 +14,7 @@
         // find the user
         User.findOne({
             name: req.body.name
-        }, function(err, user) {
+        }, (err, user) => {
 
             if (err) throw err;
 
@@ -35,7 +35,7 @@
 
                     // if user is found and password is right
                     // create a token
-                    var token = jwt.sign(user, config.superSecret, {
+                    const token = jwt.sign(user, config.superSecret, {
                         expiresIn: "1 day" // expires in 24 hours
                     });
 
@@ -70,7 +70,7 @@
              * @param {string} user.name - The user's name
              * @param {string} user.password - The user's password
              */
-            var user = new User({
+            let user = new User({
                 name: req.body.name,
                 password: req.body.password
             });
@@ -109,6 +109,7 @@
      * @param  {string} '/users/:user_id' Route descriptor
      */
     router.route('/:user_id')
+        // Only follow those routes if the user is authenticated
         .all(authorization.isUserAuthentificated)
         /**
          * Get a single user by ID

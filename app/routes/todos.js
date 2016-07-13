@@ -74,43 +74,44 @@
             });
 
     router.route('/:todo_id')
-        .put((req, res) => {
-            /**
-             * Find the todo by id and change its name
-             */
-            Todo.findById(req.params.todo_id, (err, todo) => {
 
+    .put((req, res) => {
+        /**
+         * Find the todo by id and change its name
+         */
+        Todo.findById(req.params.todo_id, (err, todo) => {
+
+            // Send error message in case of error
+            if (err) res.send(err);
+
+            // Update todo info
+            todo.name = req.body.name;
+
+            // save todo
+            todo.save((err) => {
                 // Send error message in case of error
                 if (err) res.send(err);
 
-                // Update todo info
-                todo.name = req.body.name;
-
-                // save todo
-                todo.save((err) => {
-                    // Send error message in case of error
-                    if (err) res.send(err);
-
-                    // Send success message
-                    res.json({
-                        message: 'Todo updated!'
-                    });
-                });
-
-            });
-        })
-
-        .delete((req, res) => {
-            Todo.remove({
-                _id: req.params.todo_id
-            }, (err, todo) => {
-                if (err) res.send(err);
-
+                // Send success message
                 res.json({
-                    message: 'Todo successfully deleted'
+                    message: 'Todo updated!'
                 });
+            });
+
+        });
+    })
+
+    .delete((req, res) => {
+        Todo.remove({
+            _id: req.params.todo_id
+        }, (err, todo) => {
+            if (err) res.send(err);
+
+            res.json({
+                message: 'Todo successfully deleted'
             });
         });
+    });
 
     module.exports = router;
 })();
