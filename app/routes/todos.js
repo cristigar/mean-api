@@ -74,35 +74,43 @@
             });
 
     router.route('/:todo_id')
-        // .put(
-        //     /**
-        //      * Find a todo by id and change its name
-        //      *
-        //      * @param  {integer} req.params.todo_id Id of the user
-        //      */
-        //     Todo.findById(req.params.todo_id, (err, todo) => {
-        //
-        //         // Send error message in case of error
-        //         if (err) res.send(err);
-        //
-        //         // Update the user info
-        //         user.name = req.body.name;
-        //         user.password = req.body.password;
-        //
-        //         // save the user
-        //         user.save((err) => {
-        //             // Send error message in case of error
-        //             if (err) res.send(err);
-        //
-        //             // Send success message
-        //             res.json({
-        //                 message: 'User updated!'
-        //             });
-        //         });
-        //
-        //     })
-        // )
-        .delete();
+        .put((req, res) => {
+            /**
+             * Find the todo by id and change its name
+             */
+            Todo.findById(req.params.todo_id, (err, todo) => {
+
+                // Send error message in case of error
+                if (err) res.send(err);
+
+                // Update todo info
+                todo.name = req.body.name;
+
+                // save todo
+                todo.save((err) => {
+                    // Send error message in case of error
+                    if (err) res.send(err);
+
+                    // Send success message
+                    res.json({
+                        message: 'Todo updated!'
+                    });
+                });
+
+            });
+        })
+
+        .delete((req, res) => {
+            Todo.remove({
+                _id: req.params.todo_id
+            }, (err, todo) => {
+                if (err) res.send(err);
+
+                res.json({
+                    message: 'Todo successfully deleted'
+                });
+            });
+        });
 
     module.exports = router;
 })();
