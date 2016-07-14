@@ -14,6 +14,7 @@
         assert = require('assert');
 
     // configure app to use bodyParser()
+    app.use(express.static('public'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));
@@ -26,15 +27,14 @@
     });
 
     // configuring static files request
-    app.use(express.static(__dirname + '/public'));
 
     // register the routes
     app.use('/api/v1/users', usersRoutes);
     app.use('/api/v1/todos', todosRoutes);
-    app.get('*', (req, res) => {
-        // load a single file, angular will handle the page on the front
-        res.sendFile(__dirname + '/public/index.html');
-    });
+    // app.get('*', (req, res) => {
+    //     // load a single file, angular will handle the page on the front
+    //     res.sendFile(__dirname + '/public/index.html');
+    // });
 
     // starting the server
     app.listen(config.port);

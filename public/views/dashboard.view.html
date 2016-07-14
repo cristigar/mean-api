@@ -1,7 +1,12 @@
 <div class="dashboard">
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="#" ng-click="logout()"></a>
+        </div>
+    </div>
     <div class="todos-container">
-        <div class="todo">
-            <form action="#" method="post">
+        <div class="todo" ng-repeat="todo in vm.todos">
+            <form method="post">
                 <div class="panel-container">
                     <div class="row">
                         <div class="col-xs-1" title="Mark as done">
@@ -11,7 +16,7 @@
                             To learn angularjs
                         </div>
                         <div class="col-xs-2 pull-right">
-                            <a href="#" class="text-danger">Delete</a>
+                            <a href="#" class="text-danger" ng-click="vm.deleteTodo(todo._id)">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -21,12 +26,17 @@
 
     <div class="panel panel-default add-todo">
         <div class="panel-body">
-            <form>
+            <form ng-submit="vm.addTodo()">
                 <div class="form-group">
                     <label for="todo">Add a todo</label>
-                    <input type="text" class="form-control" id="todo" name="todo" placeholder="to do...">
+                    <input type="text" class="form-control" id="todo" name="todo" placeholder="to do..." ng-model="vm.todo.name">
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#" class="pull-right" ng-click="logout()">Logout</a>
         </div>
     </div>
 </div>

@@ -353,8 +353,11 @@ a.defaultPrevented||n()})},updateParams:function(a){if(this.current&&this.curren
             templateUrl: './views/login.view.html',
             controller: 'LoginController',
             controllerAs: 'vm'
+        }).when('/dashboard', {
+            templateUrl: './views/dashboard.view.html',
+            controller: 'DashboardController',
+            controllerAs: 'vm'
         });
-
     }
     // function configure($routeProvider) {
     //     $routeProvider
@@ -384,8 +387,44 @@ a.defaultPrevented||n()})},updateParams:function(a){if(this.current&&this.curren
 (function() {
     "use strict";
 
+    angular.module('todoApp').controller('DashboardController', DashboardController);
+
+    DashboardController.$inject = ['$http', '$location'];
+
+    function DashboardController($http, $location) {
+        let vm = this;
+
+        
+    }
+})();
+
+(function() {
+    "use strict";
+
     angular.module('todoApp').controller('LoginController', LoginController);
-    function LoginController() {
+
+    LoginController.$inject = ['$http', '$location'];
+
+    function LoginController($http, $location) {
+        let vm = this;
+
+        vm.user = {};
+
+        vm.authenticate = function() {
+            $http.post('/api/v1/users/login', vm.user)
+                .success(function(data) {
+                    vm.user = {};
+                    $location.path('/dashboard');
+                    console.log(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+        };
+
+        // vm.myLog = function() {
+        //     console.log(vm.user.name + ' - ' + vm.user.password);
+        // };
 
     }
 })();

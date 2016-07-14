@@ -11,7 +11,8 @@ gulp.task('makeOneAndSmall', function() {
             'node_modules/angular/angular.min.js',
             'node_modules/angular-route/angular-route.min.js',
             'js/*.js',
-            'js/controllers/*.js'
+            'js/controllers/*.js',
+            'js/services/*.js'
         ])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))

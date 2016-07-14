@@ -6,6 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "angular-route": "^1.5.7",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
@@ -17,7 +18,9 @@
     "serve-favicon": "~2.3.0"
   },
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "angular-route": "^1.5.7"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cristigar/mean-api.git"

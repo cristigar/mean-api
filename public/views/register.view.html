@@ -1,12 +1,17 @@
 <div class="jumbotron">
-    <form class="register">
+    <form class="register" ng-submit="vm.register()">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="username" ng-model="register.name">
+            <input type="text" class="form-control" id="username" name="username" placeholder="username" ng-model="vm.user.name">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="register.password">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="vm.user.password">
+        </div>
+        <div class="row" ng-show="vm.hasError">
+            <div class="col-sm-12">
+                <p class="error">{{ vm.error }}</p>
+            </div>
         </div>
         <div class="row">
             <div class="col-xs-6">
@@ -15,7 +20,7 @@
                 </p>
             </div>
             <div class="col-xs-6">
-                <button type="submit" class="btn btn-primary pull-right">Register user</button>
+                <button type="submit" class="btn btn-primary pull-right" ng-click="vm.register()">Register user</button>
             </div>
         </div>
     </form>
