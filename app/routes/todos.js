@@ -86,6 +86,7 @@
 
             // Update todo info
             todo.name = req.body.name;
+            todo.done = req.body.done;
 
             // save todo
             todo.save((err) => {

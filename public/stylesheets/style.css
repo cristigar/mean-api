@@ -5,3 +5,16 @@
 .add-todo {
     margin-top: 2em;
 }
+
+.done {
+    text-decoration: line-through;
+}
+
+[contenteditable]:hover {
+    background: #eee;
+}
+
+[contenteditable]:focus {
+    background: yellow;
+    outline: none;
+}

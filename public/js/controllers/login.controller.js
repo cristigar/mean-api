@@ -11,7 +11,6 @@
         vm.hasError = false;
 
         vm.authenticate = function() {
-            //Provider.login(vm.user).then(handleSuccess).catch(handleErr);
             AuthProvider.login(vm.user.name, vm.user.password)
                 .then(function() {
                     $scope.$apply(function() {

@@ -27,20 +27,19 @@
         AuthProvider.init();
 
         $rootScope.$on('$routeChangeStart', function(event, next) {
-// console.log(next);
-// console.log(window.localStorage);
-            var originalPath = next.$$route.originalPath;
+            // console.log(window.localStorage);
+            if (next !== undefined) {
+                var originalPath = next.$$route.originalPath;
 
-            if (originalPath === '/login' && AuthProvider.isLoggedIn()) {
-                $location.path('/');
+                if (originalPath === '/login' && AuthProvider.isLoggedIn()) {
+                    $location.path('/');
+                }
+
+                if (!AuthProvider.checkPermissionsForView(next)) {
+                    event.preventDefault();
+                    $location.path('/login');
+                }
             }
-
-            $location.path('/login');
-
-            // if (!AuthProvider.checkPermissionsForView(next)) {
-            //     event.preventDefault();
-            //     $location.path('/login');
-            // }
         });
 
         $rootScope.url = function(url) {

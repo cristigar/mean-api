@@ -10,13 +10,13 @@
                 <div class="panel-container">
                     <div class="row">
                         <div class="col-xs-1" title="Mark as done">
-                            <input type="checkbox" name="name" value="">
+                            <input type="checkbox" name="name" value="" ng-click="vm.markAsDone(todo)" ng-model="todo.done" ng-checked="todo.done">
                         </div>
-                        <div class="col-xs-8" title="Click to edit">
-                            To learn angularjs
+                        <div class="col-xs-8" title="Click to edit" ng-class="{'done': todo.done}" contenteditable ng-model="todo.name" ng-blur="vm.editTodo(todo)">
+                            {{ todo.name }}
                         </div>
                         <div class="col-xs-2 pull-right">
-                            <a href="#" class="text-danger" ng-click="vm.deleteTodo(todo._id)">Delete</a>
+                            <a href="" class="text-danger" ng-click="vm.deleteTodo(todo)">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -29,14 +29,19 @@
             <form ng-submit="vm.addTodo()">
                 <div class="form-group">
                     <label for="todo">Add a todo</label>
-                    <input type="text" class="form-control" id="todo" name="todo" placeholder="to do..." ng-model="vm.todo.name">
+                    <input type="text" class="form-control" id="todo" name="todo" placeholder="to..." ng-model="vm.todo.name">
                 </div>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <a href="#" class="pull-right" ng-click="logout()">Logout</a>
+            <a class="pull-right" style="cursor:pointer" ng-click="vm.logout()">Logout</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#" class="pull-right" ng-click="vm.getTodos()" style="color: red; font-weight: 700;">Get todos*</a>
         </div>
     </div>
 </div>

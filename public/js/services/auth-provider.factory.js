@@ -46,41 +46,41 @@
             delete $rootScope.user;
         };
 
-        // auth.checkPermissionsForView = function(view) {
-        //     if (!view.requiresAuthentication) {
-        //         return true;
-        //     }
-        //
-        //     return userHasPermissionForView(view);
-        // };
-        //
-        // function userHasPermissionForView(view) {
-        //     if (!auth.isLoggedIn()) {
-        //         return false;
-        //     }
-        //
-        //     if (!view.permissions || !view.permisions.length) {
-        //         return true;
-        //     }
-        //
-        //     return auth.userHasPermission(view.permissions);
-        // }
-        //
-        // auth.userHasPermission = function(permissions) {
-        //     if (!auth.isLoggedIn()) {
-        //         return false;
-        //     }
-        //     var found = false;
-        //
-        //     angular.forEach(permissions, function(permision, index) {
-        //         if (window.localStorage.user.user_permissions.indexOf(permission) >= 0) {
-        //             found = true;
-        //             return;
-        //         }
-        //     });
-        //
-        //     return found;
-        // };
+        auth.checkPermissionsForView = function(view) {
+            if (!view.requiresAuthentication) {
+                return true;
+            }
+
+            return userHasPermissionForView(view);
+        };
+
+        function userHasPermissionForView(view) {
+            if (!auth.isLoggedIn()) {
+                return false;
+            }
+
+            if (!view.permissions || !view.permisions.length) {
+                return true;
+            }
+
+            return auth.userHasPermission(view.permissions);
+        }
+
+        auth.userHasPermission = function(permissions) {
+            if (!auth.isLoggedIn()) {
+                return false;
+            }
+            var found = false;
+
+            angular.forEach(permissions, function(permision, index) {
+                if (window.localStorage.user.user_permissions.indexOf(permission) >= 0) {
+                    found = true;
+                    return;
+                }
+            });
+
+            return found;
+        };
 
         auth.getCurrentUser = function() {
             return window.localStorage.user;
