@@ -1,5 +1,5 @@
 (function() {
-    "use strict";
+    'use strict';
 
     angular.module('todoApp').factory('RegistrationProvider', RegistrationProvider);
 
@@ -31,9 +31,6 @@
 
         registration.isValid = function(user) {
             var isValid = true;
-            if (user.password !== user.checkPassword) {
-                isValid = false;
-            }
 
             return isValid;
         };

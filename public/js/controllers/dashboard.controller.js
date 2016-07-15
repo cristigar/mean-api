@@ -1,5 +1,5 @@
 (function() {
-    "use strict";
+    'use strict';
 
     angular.module('todoApp').controller('DashboardController', DashboardController);
 
@@ -22,20 +22,13 @@
             }).then(handleSuccess, handleError);
 
             function handleSuccess(response) {
-                console.log('Getting all todos WORKING');
-                console.log(response);
                 vm.todos = response.data;
             }
 
-            function handleError(response) {
-                console.log('Getting all todos NOT WORKING: ' + response);
-            }
+            function handleError(response) {}
         };
 
         vm.addTodo = function() {
-            // console.log(vm.todo.name);
-            // console.log('User id from localstorage ' + window.localStorage.user.id);
-
             $http.post('/api/v1/todos', {
                 name: vm.todo.name,
                 author: user._id,
@@ -43,18 +36,14 @@
             }).then(handleSuccess, handleError);
 
             function handleSuccess(response) {
-                console.log('Posting a todo WORKING [' + vm.todo.name + ']');
                 vm.todo.name = '';
                 vm.getTodos();
             }
 
-            function handleError(response) {
-                console.log('Posting a todo NOT WORKING');
-            }
+            function handleError(response) {}
         };
 
         vm.markAsDone = function(todo) {
-            console.log('Mark as done', todo);
             $http.put('/api/v1/todos/' + todo._id, {
                 name: todo.name,
                 done: todo.done,
@@ -65,9 +54,7 @@
                 vm.getTodos();
             }
 
-            function handleError(response) {
-                console.log('Marking as done NOT WORKING');
-            }
+            function handleError(response) {}
         };
 
         vm.deleteTodo = function(todo) {
@@ -78,9 +65,7 @@
                 vm.getTodos();
             }
 
-            function handleError(response) {
-                console.log('Deleting todo NOT WORKING');
-            }
+            function handleError(response) {}
         };
 
         vm.editTodo = function(todo) {
@@ -94,9 +79,7 @@
                 vm.getTodos();
             }
 
-            function handleError(response) {
-                console.log('Edit todo NOT WORKING');
-            }
+            function handleError(response) {}
         };
 
         vm.getTodos();

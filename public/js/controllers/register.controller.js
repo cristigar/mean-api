@@ -16,7 +16,7 @@
                     .catch(handleError);
             } else {
                 vm.hasError = true;
-                vm.error = "Passwords do not match";
+                vm.error = "Invalid password";
             }
 
             function handleSuccess() {
@@ -31,19 +31,6 @@
                     vm.error = err;
                 });
             }
-
-
-            // console.log(vm.user);
-            // $http.post('/api/v1/users/', vm.user);
-            // $http.post('/api/v1/users/login', vm.user)
-            //     .success(function(data) {
-            //         vm.user = {};
-            //         $location.path('/dashboard');
-            //         console.log(data);
-            //     })
-            //     .error(function(data) {
-            //         console.log('Error: ' + data);
-            //     });
         };
     }
 })();

@@ -333,68 +333,138 @@ a.defaultPrevented||n()})},updateParams:function(a){if(this.current&&this.curren
 //# sourceMappingURL=angular-route.min.js.map
 
 (function() {
-  angular.module('todoApp', ['ngRoute']);
+    angular.module('todoApp', ['ngRoute']);
 })();
 
 (function() {
     'use strict';
-    angular.module('todoApp').config(['$routeProvider', configure]);
+
+    angular.module('todoApp')
+        .config(['$routeProvider', configure])
+        .run(['$rootScope', '$location', 'AuthProvider', run]);
 
     function configure($routeProvider) {
-        $routeProvider.when('/', {
-            templateUrl: './views/home.view.html',
-            controller: 'MainController',
-            controllerAs: 'vm'
-        }).when('/register', {
-            templateUrl: './views/register.view.html',
-            controller: 'RegisterController',
-            controllerAs: 'vm'
-        }).when('/login', {
-            templateUrl: './views/login.view.html',
-            controller: 'LoginController',
-            controllerAs: 'vm'
-        }).when('/dashboard', {
-            templateUrl: './views/dashboard.view.html',
-            controller: 'DashboardController',
-            controllerAs: 'vm'
-        });
+        $routeProvider
+            .when('/', {
+                templateUrl: './views/dashboard.view.html',
+                requiresAuthentication: true,
+                controller: 'DashboardController',
+                controllerAs: 'vm'
+            }).when('/register', {
+                templateUrl: './views/register.view.html',
+                controller: 'RegisterController',
+                controllerAs: 'vm'
+            }).when('/login', {
+                templateUrl: './views/login.view.html',
+                controller: 'LoginController',
+                controllerAs: 'vm'
+            });
     }
-    // function configure($routeProvider) {
-    //     $routeProvider
-    //     .when('/', {
-    //         templateUrl: './views/home.view.html',
-    //         controller: 'MainController',
-    //         controllerAs: 'vm'
-    //     });
-    //     // .when('/register', {
-    //     //     templateUrl: './app/views/register.view.html',
-    //     //     controller: 'RegisterController',
-    //     //     controllerAs: 'vm'
-    //     // })
-    //     // .when('/login', {
-    //     //     templateUrl: 'views/login.view.html',
-    //     //     controller: 'LoginController',
-    //     //     controllerAs: 'vm'
-    //     // })
-    //     // .when('/dashboard', {
-    //     //     templateUrl: 'views/dashboard.view.html',
-    //     //     controller: 'DashboardController',
-    //     //     controllerAs: 'vm'
-    //     // });
-    // }
+
+    function run($rootScope, $location, AuthProvider) {
+        AuthProvider.init();
+
+        $rootScope.$on('$routeChangeStart', function(event, next) {
+            if (next !== undefined) {
+                var originalPath = next.$$route.originalPath;
+
+                if (originalPath === '/login' && AuthProvider.isLoggedIn()) {
+                    $location.path('/');
+                }
+            }
+        });
+
+        $rootScope.url = function(url) {
+            $location.path(url);
+        };
+    }
 })();
 
 (function() {
-    "use strict";
+    'use strict';
 
     angular.module('todoApp').controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$http', '$location'];
+    DashboardController.$inject = ['$location', '$rootScope', '$http', 'AuthProvider'];
 
-    function DashboardController($http, $location) {
+    function DashboardController($location, $rootScope, $http, AuthProvider) {
         let vm = this;
+        vm.todos = [];
 
-        
+        const user = JSON.parse(window.localStorage.user);
+
+        vm.logout = function() {
+            AuthProvider.logout();
+            $location.path('/login');
+        };
+
+        vm.getTodos = function() {
+            $http.get('/api/v1/todos/' + user._id, {
+                token: window.localStorage.token
+            }).then(handleSuccess, handleError);
+
+            function handleSuccess(response) {
+                vm.todos = response.data;
+            }
+
+            function handleError(response) {}
+        };
+
+        vm.addTodo = function() {
+            $http.post('/api/v1/todos', {
+                name: vm.todo.name,
+                author: user._id,
+                token: window.localStorage.token
+            }).then(handleSuccess, handleError);
+
+            function handleSuccess(response) {
+                vm.todo.name = '';
+                vm.getTodos();
+            }
+
+            function handleError(response) {}
+        };
+
+        vm.markAsDone = function(todo) {
+            $http.put('/api/v1/todos/' + todo._id, {
+                name: todo.name,
+                done: todo.done,
+                token: window.localStorage.token
+            }).then(handleSuccess, handleError);
+
+            function handleSuccess(response) {
+                vm.getTodos();
+            }
+
+            function handleError(response) {}
+        };
+
+        vm.deleteTodo = function(todo) {
+            $http.delete('/api/v1/todos/' + todo._id)
+                .then(handleSuccess, handleError);
+
+            function handleSuccess(response) {
+                vm.getTodos();
+            }
+
+            function handleError(response) {}
+        };
+
+        vm.editTodo = function(todo) {
+            $http.put('/api/v1/todos/' + todo._id, {
+                name: todo.name,
+                done: todo.done,
+                token: window.localStorage.token
+            }).then(handleSuccess, handleError);
+
+            function handleSuccess(response) {
+                vm.getTodos();
+            }
+
+            function handleError(response) {}
+        };
+
+        vm.getTodos();
     }
 })();
 
@@ -403,46 +473,209 @@ a.defaultPrevented||n()})},updateParams:function(a){if(this.current&&this.curren
 
     angular.module('todoApp').controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$http', '$location'];
+    LoginController.$inject = ['$location', '$scope', 'AuthProvider'];
 
-    function LoginController($http, $location) {
+    function LoginController($location, $scope, AuthProvider) {
         let vm = this;
-
         vm.user = {};
+        vm.hasError = false;
 
         vm.authenticate = function() {
-            $http.post('/api/v1/users/login', vm.user)
-                .success(function(data) {
-                    vm.user = {};
-                    $location.path('/dashboard');
-                    console.log(data);
-                })
-                .error(function(data) {
-                    console.log('Error: ' + data);
+            AuthProvider.login(vm.user.name, vm.user.password)
+                .then(function() {
+                    $scope.$apply(function() {
+                        $location.path('/');
+                    });
+                }).catch(function(err) {
+                    $scope.$apply(function() {
+                        vm.hasError = true;
+                        vm.error = err;
+                    });
                 });
         };
 
-        // vm.myLog = function() {
-        //     console.log(vm.user.name + ' - ' + vm.user.password);
-        // };
-
+        vm.url = function(url) {
+            $location.path(url);
+        };
     }
 })();
 
 (function() {
-    "use strict";
-
-    angular.module('todoApp').controller('MainController', MainController);
-    function MainController() {
-
-    }
-})();
-
-(function() {
-    "use strict";
+    'use strict';
 
     angular.module('todoApp').controller('RegisterController', RegisterController);
-    function RegisterController() {
 
+    RegisterController.$inject = ['$location', '$scope', 'RegistrationProvider'];
+
+    function RegisterController($location, $scope, RegistrationProvider) {
+        let vm = this;
+        vm.user = {};
+
+        vm.register = function() {
+            if (RegistrationProvider.isValid(vm.user)) {
+                RegistrationProvider.register(vm.user)
+                    .then(handleSuccess)
+                    .catch(handleError);
+            } else {
+                vm.hasError = true;
+                vm.error = "Invalid password";
+            }
+
+            function handleSuccess() {
+                $scope.$apply(function() {
+                    $location.path('/login');
+                });
+            }
+
+            function handleError(err) {
+                $scope.$apply(function() {
+                    vm.hasError = true;
+                    vm.error = err;
+                });
+            }
+        };
+    }
+})();
+
+(function() {
+    "use strict";
+
+    angular.module('todoApp').factory('AuthProvider', AuthProvider);
+
+    AuthProvider.$inject = ['$http', '$rootScope'];
+
+    function AuthProvider($http, $rootScope) {
+        var auth = {};
+
+        auth.init = function() {
+            if (auth.isLoggedIn()) {
+                $rootScope.user = auth.getCurrentUser();
+            }
+        };
+
+        auth.login = function(name, password) {
+
+            return new Promise(function(resolve, reject) {
+                $http.post('/api/v1/users/login', {
+                    name: name,
+                    password: password
+                }).then(handleSuccess, handleError);
+
+                function handleSuccess(response) {
+                    if (response.data.success) {
+                        window.localStorage.user = JSON.stringify(response.data.user);
+                        window.localStorage.token = response.data.token;
+                        $rootScope.user = response.data.user;
+                        resolve();
+                    } else {
+                        reject(response.data.message);
+                    }
+                }
+
+                function handleError(response) {
+                    reject(response.data.message);
+                }
+            });
+        };
+
+        auth.logout = function() {
+            delete window.localStorage.user;
+            delete $rootScope.user;
+        };
+
+        auth.getCurrentUser = function() {
+            return window.localStorage.user;
+        };
+
+        auth.isLoggedIn = function() {
+            return window.localStorage.user !== undefined;
+        };
+
+        return auth;
+    }
+})();
+
+(function() {
+    "use strict";
+
+    angular.module('todoApp').factory('RegistrationProvider', RegistrationProvider);
+
+    RegistrationProvider.$inject = ['$http'];
+
+    function RegistrationProvider($http) {
+        var registration = {};
+
+        registration.register = function(user) {
+            return new Promise(function(resolve, reject) {
+                $http.post('/api/v1/users', {
+                    name: user.name,
+                    password: user.password
+                }).then(handleSuccess, handleError);
+
+                function handleSuccess(response) {
+                    if (response.data.success) {
+                        resolve();
+                    } else {
+                        reject(response.data.message);
+                    }
+                }
+
+                function handleError(response) {
+                    reject(response.data.message);
+                }
+            });
+        };
+
+        registration.isValid = function(user) {
+            var isValid = true;
+
+            return isValid;
+        };
+
+        return registration;
+    }
+})();
+
+(function() {
+    'use strict';
+
+    angular.module('todoApp').directive('contenteditable', ContentEditable);
+
+    ContentEditable.$inject = ['AuthProvider'];
+
+    function ContentEditable() {
+        return {
+            restrict: "A",
+            require: "ngModel",
+            link: function(scope, element, attrs, ngModel) {
+
+                function read() {
+                    ngModel.$setViewValue(element.text());
+                }
+
+                ngModel.$render = function() {
+                    element.text(ngModel.$viewValue || "");
+                };
+
+                // Bind events to todos
+                element.bind("blur keyup keydown keypress change", function(event) {
+                    /**
+                     * If Enter is pressed (keyCode = 13) or the field is
+                     * blurred, prevent the default behavior, update the model
+                     * and blur the field
+                     *
+                     * otherwise, if Escape is pressed (keyCode = 27), discard
+                     * the changes and blur
+                     */
+                    if (event.which === 13 || event.type === 'blur') {
+                        event.preventDefault();
+                        scope.$apply(read);
+                        element[0].blur();
+                    } else if (event.which === 27) {
+                        element[0].blur();
+                    }
+                });
+            }
+        };
     }
 })();

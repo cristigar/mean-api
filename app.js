@@ -26,16 +26,10 @@
         console.log('Successfully connected to ' + config.database);
     });
 
-    // configuring static files request
-
     // register the routes
     app.use('/api/v1/users', usersRoutes);
     app.use('/api/v1/todos', todosRoutes);
-    // app.get('*', (req, res) => {
-    //     // load a single file, angular will handle the page on the front
-    //     res.sendFile(__dirname + '/public/index.html');
-    // });
-
+    
     // starting the server
     app.listen(config.port);
     console.log('Listening on port: ' + config.port);

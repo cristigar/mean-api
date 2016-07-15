@@ -19,8 +19,16 @@
                     element.text(ngModel.$viewValue || "");
                 };
 
+                // Bind events to todos
                 element.bind("blur keyup keydown keypress change", function(event) {
-                    console.log(event);
+                    /**
+                     * If Enter is pressed (keyCode = 13) or the field is
+                     * blurred, prevent the default behavior, update the model
+                     * and blur the field
+                     *
+                     * otherwise, if Escape is pressed (keyCode = 27), discard
+                     * the changes and blur
+                     */
                     if (event.which === 13 || event.type === 'blur') {
                         event.preventDefault();
                         scope.$apply(read);

@@ -27,17 +27,11 @@
         AuthProvider.init();
 
         $rootScope.$on('$routeChangeStart', function(event, next) {
-            // console.log(window.localStorage);
             if (next !== undefined) {
                 var originalPath = next.$$route.originalPath;
 
                 if (originalPath === '/login' && AuthProvider.isLoggedIn()) {
                     $location.path('/');
-                }
-
-                if (!AuthProvider.checkPermissionsForView(next)) {
-                    event.preventDefault();
-                    $location.path('/login');
                 }
             }
         });

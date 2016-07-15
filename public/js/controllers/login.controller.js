@@ -1,5 +1,5 @@
 (function() {
-    "use strict";
+    'use strict';
 
     angular.module('todoApp').controller('LoginController', LoginController);
 
@@ -14,7 +14,6 @@
             AuthProvider.login(vm.user.name, vm.user.password)
                 .then(function() {
                     $scope.$apply(function() {
-                        // redirect to dashboard if authentication is successful
                         $location.path('/');
                     });
                 }).catch(function(err) {
@@ -28,9 +27,5 @@
         vm.url = function(url) {
             $location.path(url);
         };
-
-        // vm.myLog = function() {
-        //     console.log(vm.user.name + ' - ' + vm.user.password);
-        // };
     }
 })();

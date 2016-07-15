@@ -12,7 +12,8 @@ gulp.task('makeOneAndSmall', function() {
             'node_modules/angular-route/angular-route.min.js',
             'js/*.js',
             'js/controllers/*.js',
-            'js/services/*.js'
+            'js/services/*.js',
+            'js/directives/*.js'
         ])
         .pipe(concat('app.js'))
         .pipe(gulp.dest('dist/js'))
@@ -23,7 +24,12 @@ gulp.task('makeOneAndSmall', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch(['js/*.js', 'js/controllers/*.js'], ['makeOneAndSmall']);
+    gulp.watch([
+        'js/*.js',
+        'js/controllers/*.js',
+        'js/services/*.js',
+        'js/directives/*.js'
+    ], ['makeOneAndSmall']);
 });
 
 // Default Task
