@@ -36,7 +36,7 @@
                     // if user is found and password is right
                     // create a token
                     const token = jwt.sign(user, config.superSecret, {
-                        expiresIn: "1 day" // expires in 24 hours
+                        expiresIn: 60 // expires in 24 hours
                     });
 
                     // return the information including token as JSON

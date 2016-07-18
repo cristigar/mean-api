@@ -4,7 +4,7 @@
   "description": "todo app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start karma.conf.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,11 +14,18 @@
     "angular-route": "^1.5.7"
   },
   "devDependencies": {
+    "angular-mocks": "^1.5.7",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-jshint": "^2.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.5.4",
+    "jasmine-core": "^2.4.1",
+    "karma": "^1.1.1",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.1",
     "merge-stream": "^1.0.0",
     "uglify": "^0.1.5"
   }

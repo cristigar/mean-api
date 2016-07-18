@@ -9,6 +9,8 @@
         let vm = this;
         vm.todos = [];
 
+        vm.greeting = 'Hello';
+
         const user = JSON.parse(window.localStorage.user);
 
         vm.logout = function() {
